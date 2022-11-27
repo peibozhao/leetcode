@@ -11,7 +11,7 @@ const std::string kIndent = "|---";
 
 int main(int argc, char *argv[]) {
   Solution solution;
-  std::ifstream ifs("./testcases");
+  std::ifstream ifs("../testcases");
   std::istream &is = ifs;
   int testcase_idx = 0;
   while (true) {

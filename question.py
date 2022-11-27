@@ -21,6 +21,8 @@ class Question:
         self._param_names = [i['name'] for i in meta_dict['params']]
         self._param_types = [i['type'] for i in meta_dict['params']]
         self._testcases = [i.split() for i in eval(question['jsonExampleTestcases'])]
+        self._content = question['content']
+        self._zh_content = question['translatedContent']
 
     def _request_body(self):
         return f'{{"operationName":"questionData","variables":{{"titleSlug":"{self._title_slug}"}},"query":"query questionData($titleSlug: String) {{ question(titleSlug: $titleSlug) {{ questionId questionFrontendId categoryTitle boundTopicId title titleSlug content translatedTitle translatedContent isPaidOnly difficulty likes dislikes isLiked similarQuestions contributors {{ username profileUrl avatarUrl __typename }} langToValidPlayground topicTags {{ name slug translatedName __typename }} companyTagStats codeSnippets {{ lang langSlug code __typename }} stats hints solution {{ id canSeeDetail __typename }} status sampleTestCase metaData judgerAvailable judgeType mysqlSchemas enableRunCode envInfo book {{ id bookName pressName source shortDescription fullDescription bookImgUrl pressImgUrl productUrl __typename }} isSubscribed isDailyQuestion dailyRecordStatus editorType ugcQuestionId style exampleTestcases jsonExampleTestcases __typename }}}}"}}'
@@ -42,6 +44,12 @@ class Question:
 
     def testcases(self):
         return self._testcases
+
+    def en_content(self):
+        return self._content
+
+    def zh_content(self):
+        return self._zh_content
 
     def _to_cpp_param_name(param_name):
         if param_name not in Question.cpp_param_type_map:
