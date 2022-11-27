@@ -1,0 +1,43 @@
+
+#include <chrono>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+#include "serialize.h"
+#include "solution.h"
+
+int main(int argc, char *argv[]) {
+  Solution solution;
+  std::ifstream ifs("./testcases");
+  std::istream &is = ifs;
+  int testcase_idx = 0;
+  while (true) {
+    testcase_idx += 1;
+    std::string _line;
+    {%- for param_name in param_names %}
+    std::getline(is, _line);
+    if (!is) { break; }
+    {%- if loop.first %}
+    std::cout << "Testcase " << testcase_idx << std::endl;
+    std::cout << "\tInput:" << std::endl;
+    {%- endif %}
+    std::cout << "\t\t" << _line << std::endl;
+    {%- with param_type = param_types[loop.index0] %}
+    {{ param_type }} {{ param_name }};
+    Deserialize(_line, {{ param_name }});
+    {%- endwith %}
+    {%- endfor %}
+
+    auto start = std::chrono::system_clock::now();
+    auto result = solution.{{func_name}}({% for param_name in param_names %}{{ param_name }}{% if not loop.last %}, {% endif %}{% endfor %});
+    auto end = std::chrono::system_clock::now();
+    std::cout << "\tCost(ms): "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+              << std::endl;
+    std::string result_str;
+    Serialize(result, result_str);
+    std::cout << "\tResult: " << result_str << std::endl;
+  }
+  return 0;
+}
