@@ -7,37 +7,46 @@
 #include "serialize.h"
 #include "solution.h"
 
+const std::string kIndent = "|---";
+
 int main(int argc, char *argv[]) {
   Solution solution;
   std::ifstream ifs("./testcases");
   std::istream &is = ifs;
   int testcase_idx = 0;
   while (true) {
+    std::string cur_indent = "";
     testcase_idx += 1;
     std::string _line;
     {%- for param_name in param_names %}
+    // Param {{ param_name }}, index {{ loop.index0 }}
     std::getline(is, _line);
-    if (!is) { break; }
     {%- if loop.first %}
-    std::cout << "Testcase " << testcase_idx << std::endl;
-    std::cout << "\tInput:" << std::endl;
+    if (!is) { break; }
+    std::cout << cur_indent << "==========  "
+              << "Testcase " << testcase_idx
+              << "  ==========" << std::endl;
+    cur_indent += kIndent;
+    std::cout << cur_indent << "Input:" << std::endl;
+    cur_indent += kIndent;
     {%- endif %}
-    std::cout << "\t\t" << _line << std::endl;
+    std::cout << cur_indent << _line << std::endl;
     {%- with param_type = param_types[loop.index0] %}
     {{ param_type }} {{ param_name }};
     Deserialize(_line, {{ param_name }});
     {%- endwith %}
     {%- endfor %}
+    cur_indent.erase(cur_indent.size() - kIndent.size());
 
     auto start = std::chrono::system_clock::now();
     auto result = solution.{{func_name}}({% for param_name in param_names %}{{ param_name }}{% if not loop.last %}, {% endif %}{% endfor %});
     auto end = std::chrono::system_clock::now();
-    std::cout << "\tCost(ms): "
+    std::cout << cur_indent << "Cost(ms): "
               << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
               << std::endl;
     std::string result_str;
     Serialize(result, result_str);
-    std::cout << "\tResult: " << result_str << std::endl;
+    std::cout << cur_indent << "Result: " << result_str << std::endl;
   }
   return 0;
 }

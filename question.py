@@ -5,15 +5,14 @@ import json
 
 
 class Question:
-    def __init__(self, title):
-        self._title = title
+    def __init__(self, title_slug):
+        self._title_slug = title_slug
         response = requests.post(url='https://leetcode.cn/graphql/',
                                  headers={'content-type': 'application/json'},
                                  data=self._request_body())
-        #  print(str(response.content, encoding='utf8'))
         response_dict = json.loads(response.content)
         question = response_dict['data']['question']
-        self._id = question['questionFrontendId']
+        self._frontend_id = question['questionFrontendId']
         for code_snippet in question['codeSnippets']:
             if code_snippet['lang'] == 'C++':
                 self._cpp_solution = code_snippet['code']
@@ -24,10 +23,10 @@ class Question:
         self._testcases = [i.split() for i in eval(question['jsonExampleTestcases'])]
 
     def _request_body(self):
-        return f'{{"operationName":"questionData","variables":{{"titleSlug":"{self._title}"}},"query":"query questionData($titleSlug: String) {{ question(titleSlug: $titleSlug) {{ questionId questionFrontendId categoryTitle boundTopicId title titleSlug content translatedTitle translatedContent isPaidOnly difficulty likes dislikes isLiked similarQuestions contributors {{ username profileUrl avatarUrl __typename }} langToValidPlayground topicTags {{ name slug translatedName __typename }} companyTagStats codeSnippets {{ lang langSlug code __typename }} stats hints solution {{ id canSeeDetail __typename }} status sampleTestCase metaData judgerAvailable judgeType mysqlSchemas enableRunCode envInfo book {{ id bookName pressName source shortDescription fullDescription bookImgUrl pressImgUrl productUrl __typename }} isSubscribed isDailyQuestion dailyRecordStatus editorType ugcQuestionId style exampleTestcases jsonExampleTestcases __typename }}}}"}}'
+        return f'{{"operationName":"questionData","variables":{{"titleSlug":"{self._title_slug}"}},"query":"query questionData($titleSlug: String) {{ question(titleSlug: $titleSlug) {{ questionId questionFrontendId categoryTitle boundTopicId title titleSlug content translatedTitle translatedContent isPaidOnly difficulty likes dislikes isLiked similarQuestions contributors {{ username profileUrl avatarUrl __typename }} langToValidPlayground topicTags {{ name slug translatedName __typename }} companyTagStats codeSnippets {{ lang langSlug code __typename }} stats hints solution {{ id canSeeDetail __typename }} status sampleTestCase metaData judgerAvailable judgeType mysqlSchemas enableRunCode envInfo book {{ id bookName pressName source shortDescription fullDescription bookImgUrl pressImgUrl productUrl __typename }} isSubscribed isDailyQuestion dailyRecordStatus editorType ugcQuestionId style exampleTestcases jsonExampleTestcases __typename }}}}"}}'
 
-    def id(self):
-        return self._id
+    def fronted_id(self):
+        return self._frontend_id
 
     def cpp_solution(self):
         return self._cpp_solution
