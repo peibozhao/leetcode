@@ -23,6 +23,8 @@ class Question:
         self._testcases = [i.split() for i in eval(question['jsonExampleTestcases'])]
         self._content = question['content']
         self._zh_content = question['translatedContent']
+        self._title = question['title']
+        self._zh_title = question['translatedTitle']
 
     def _request_body(self):
         return f'{{"operationName":"questionData","variables":{{"titleSlug":"{self._title_slug}"}},"query":"query questionData($titleSlug: String) {{ question(titleSlug: $titleSlug) {{ questionId questionFrontendId categoryTitle boundTopicId title titleSlug content translatedTitle translatedContent isPaidOnly difficulty likes dislikes isLiked similarQuestions contributors {{ username profileUrl avatarUrl __typename }} langToValidPlayground topicTags {{ name slug translatedName __typename }} companyTagStats codeSnippets {{ lang langSlug code __typename }} stats hints solution {{ id canSeeDetail __typename }} status sampleTestCase metaData judgerAvailable judgeType mysqlSchemas enableRunCode envInfo book {{ id bookName pressName source shortDescription fullDescription bookImgUrl pressImgUrl productUrl __typename }} isSubscribed isDailyQuestion dailyRecordStatus editorType ugcQuestionId style exampleTestcases jsonExampleTestcases __typename }}}}"}}'
@@ -50,6 +52,12 @@ class Question:
 
     def zh_content(self):
         return self._zh_content
+
+    def en_title(self):
+        return self._title
+
+    def zh_title(self):
+        return self._zh_title
 
     def _to_cpp_param_name(param_name):
         if param_name not in Question.cpp_param_type_map:

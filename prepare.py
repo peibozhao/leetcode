@@ -20,6 +20,7 @@ def Main():
     else:
         qst = leetcode.question_of_today()
 
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader('./template/'))
     # Create question file
     qst_dir = qst.fronted_id()
     os.makedirs(qst_dir, exist_ok=True)
@@ -28,8 +29,13 @@ def Main():
         for testcase in qst.testcases():
             testcases_file.writelines([i + '\n' for i in testcase])
     # question.md
-    with open(os.path.join(qst_dir, 'question.md'), 'w') as question_file:
-        question_file.write(qst.en_content())
+    qst_temp = env.get_template('question.md.template')
+    qst_text = qst_temp.render(en_title=qst.en_title(),
+                               en_content=qst.en_content(),
+                               zh_title=qst.zh_title(),
+                               zh_content=qst.zh_content())
+    with open(os.path.join(qst_dir, 'question.md'), 'w') as qst_file:
+        qst_file.write(qst_text)
 
     # Craete cpp file
     cpp_dir = os.path.join(qst_dir, 'cpp')
@@ -37,7 +43,6 @@ def Main():
     shutil.copy('template/cpp/Makefile', cpp_dir)
     shutil.copy('template/cpp/serialize.h', cpp_dir)
     # main.cpp
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader('./template/'))
     main_temp = env.get_template('cpp/main.cpp.template')
     main_text = main_temp.render(func_name=qst.func_name(),
                                  param_types=qst.cpp_param_types(),
