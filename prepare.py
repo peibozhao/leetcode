@@ -50,10 +50,14 @@ def Main():
     with open(os.path.join(cpp_dir, 'main.cpp'), 'w') as main_file:
         main_file.write(main_text)
     # solution.h
-    solution_temp = env.get_template('cpp/solution.h.template')
-    solution_text = solution_temp.render(code=qst.cpp_solution())
-    with open(os.path.join(cpp_dir, 'solution.h'), 'w') as solution_file:
-        solution_file.write(solution_text)
+    solution_fname = os.path.join(cpp_dir, 'solution.h')
+    if not os.path.exists(solution_fname):
+        solution_temp = env.get_template('cpp/solution.h.template')
+        solution_text = solution_temp.render(code=qst.cpp_solution())
+        with open(os.path.join(solution_fname), 'w') as solution_file:
+            solution_file.write(solution_text)
+
+    print(qst_dir)
 
 
 if __name__ == '__main__':
