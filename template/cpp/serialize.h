@@ -98,5 +98,6 @@ void Deserialize<int>(const std::string &s, int &ret) {
 template <>
 void Deserialize<std::string>(const std::string &s, std::string &ret) {
   std::string str = Trim(s);
-  ret = str;
+  ret = str.substr(1, str.size() - 2);
 }
+
