@@ -6,6 +6,7 @@ from leetcode import Leetcode
 import jinja2
 import shutil
 import os
+import sys
 import argparse
 
 
@@ -13,6 +14,8 @@ def Main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--frontend-id', type=str)
     args = arg_parser.parse_args()
+
+    os.chdir(os.path.dirname(sys.argv[0]))
 
     leetcode = Leetcode()
     if not args.frontend_id is None:
