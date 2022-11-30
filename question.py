@@ -10,6 +10,7 @@ class Question:
         response = requests.post(url='https://leetcode.cn/graphql/',
                                  headers={'content-type': 'application/json'},
                                  data=self._request_body())
+        #  print(str(response.content, encoding='utf-8'))
         response_dict = json.loads(response.content)
         question = response_dict['data']['question']
         self._frontend_id = question['questionFrontendId']

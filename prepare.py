@@ -15,7 +15,9 @@ def Main():
     arg_parser.add_argument('--frontend-id', type=str)
     args = arg_parser.parse_args()
 
-    os.chdir(os.path.dirname(sys.argv[0]))
+    cwd = os.path.dirname(sys.argv[0])
+    cwd = cwd if len(cwd) != 0 else '.'
+    os.chdir(cwd)
 
     leetcode = Leetcode()
     if not args.frontend_id is None:
