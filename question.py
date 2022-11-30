@@ -18,6 +18,10 @@ class Question:
             if code_snippet['lang'] == 'C++':
                 self._cpp_solution = code_snippet['code']
         meta_dict = json.loads(question['metaData'])
+        if 'name' not in meta_dict:
+            # TODO define a class
+            print('Unsupport question type')
+            exit(-1)
         self._func_name = meta_dict['name']
         self._param_names = [i['name'] for i in meta_dict['params']]
         self._param_types = [i['type'] for i in meta_dict['params']]
